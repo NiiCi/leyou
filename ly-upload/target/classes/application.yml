@@ -1,0 +1,31 @@
+server:
+  port: 8082
+spring:
+  application:
+    name: upload-service
+  servlet:
+    multipart:
+      max-file-size: 5MB #限制文件大小为5MB
+#Eureka
+eureka:
+  client:
+    service-url:
+      defaultZone:  http://127.0.0.1:10086/eureka
+  instance:
+    lease-renewal-interval-in-seconds: 5 # 每隔5秒发送一次心跳
+    lease-expiration-duration-in-seconds: 10 # 10秒不发送就过期
+    prefer-ip-address: true
+    ip-address: 127.0.0.1
+    instance-id: ${spring.application.name}:${server.port} #注册到eureka服务上的id
+
+#编写FastDFS属性
+fdfs:
+  so-timeout: 1501  #读取时间
+  connect-timeout: 601  #链接超时时间
+  thumb-image:
+    width: 60
+    height: 60
+  tracker-list: #tracker 地址
+    - 148.70.3.235:22122
+
+
