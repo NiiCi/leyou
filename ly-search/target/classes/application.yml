@@ -1,0 +1,23 @@
+server:
+  port: 8083
+spring:
+  application:
+    name: search-service
+  data:
+    #声明elasticsearch的服务名和地址
+    elasticsearch:
+      cluster-name: leyou-es
+      cluster-nodes: 148.70.3.235:9300
+eureka:
+  client:
+    service-url:
+      defalutZone: http://127.0.0.1:8761/eureka
+  instance:
+    #每隔5秒发送一次心跳
+    lease-renewal-interval-in-seconds: 5
+    #10秒不发送则过期
+    lease-expiration-duration-in-seconds: 10
+    prefer-ip-address: true
+    ip-address: 127.0.0.1
+    #指定注册到eureka的服务名
+    instance-id: ${spring.application.name}:${server.port}

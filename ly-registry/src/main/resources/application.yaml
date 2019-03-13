@@ -1,8 +1,8 @@
 server:
-  port: 10086
+  port: 8761
 spring:
   application:
-    name: ly-eureka-register
+    name: eureka-register
 eureka:
   client:
     fetch-registry: false
