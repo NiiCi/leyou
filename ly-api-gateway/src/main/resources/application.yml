@@ -14,24 +14,38 @@ eureka:
     instance-id: ${spring.application.name}:${server.port}
 zuul:
   prefix: /api #添加路由前缀
-  retryable: true
+  retryable: true #开启zuul的重试配置,需要 spring-retry 依赖
   routes:
     item-service: /item/**  #将商品微服务映射到/item/**
 #  ignored-patterns: /upload/** #文件上传不经过zuul网关,减少负担
   ignored-services:
     #集合语法 - 代表可以配置多个
     - upload-service #忽略upload-service服务,绕过zuul网关,减少网络负担
+
 ribbon:
-  ConnectTimeout: 250 # 连接超时时间(ms)
-  ReadTimeout: 2000 # 通信超时时间(ms)
-  OkToRetryOnAllOperations: true # 是否对所有操作重试
-  MaxAutoRetriesNextServer: 1 # 同一服务不同实例的重试次数
-  MaxAutoRetries: 1 # 同一实例的重试次数
+  # Ribbon的连接超时时间
+  ConnectTimeout: 60000
+  # Ribbon的数据读取超时时间
+  ReadTimeout: 60000
+  # 是否对所有操作都进行重试
+  OktoRetryOnAllOperations: true
+  # 切换服务重连次数
+  MaxAutoRetriesNextServer: 1
+  # 同一服务重连次数
+  MaxAutoRetries: 1
 
 hystrix:
   command:
     default:
       execution:
-        isolation:
-          thread:
-            timeoutInMillisecond: 10000 # 熔断超时时长：10000ms
+        thread:
+          # 熔断时间,超出则熔断
+          timeoutInMilliseconds: 60000
+
+
+
+
+
+
+
+

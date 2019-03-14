@@ -1,7 +1,7 @@
 package com.leyou.search.service.impl;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.leyou.common.pojo.utils.JsonUtils;
+import com.leyou.common.utils.JsonUtils;
 import com.leyou.search.client.CategoryClient;
 import com.leyou.search.client.GoodsClient;
 import com.leyou.search.client.SpecificationClient;
@@ -15,10 +15,7 @@ import pojo.SpecParam;
 import pojo.Spu;
 import pojo.SpuDetail;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Service("indexService")
@@ -101,8 +98,37 @@ public class IndexServiceImpl implements IndexService {
         return goods;
     }
 
-    private String chooseSegment(String value, SpecParam s) {
-        return null;
+    private String chooseSegment(String value, SpecParam spec) {
+        Optional<String> valFlag = null ;
+        valFlag = Optional.ofNullable(value);
+        Double val = valFlag.map(s -> Double.parseDouble(s)).orElse(null);
+        String result = "其它";
+        // 保存数值段
+        // 数值段 为{0-1,1-2}的json形式，进行分割
+        String[] segments =  spec.getSegments().split(",");
+        for (String segment : segments) {
+            String[] segs = segment.split("-");
+            //获取数值范围
+            valFlag = Optional.ofNullable(segs[0]);
+            Double begin = valFlag.map(s -> Double.parseDouble(s)).orElse(null);
+            Double end = Double.MAX_VALUE;
+            if (segs.length == 2){
+                valFlag = Optional.ofNullable(segs[1]);
+                end = valFlag.map(s -> Double.parseDouble(s)).orElse(null);
+            }
+            //判断是否在范围内
+            if(val >= begin && val < end){
+                if(segs.length == 1){
+                    result = segs[0] + spec.getUnit() + "以上";
+                }else if(begin == 0){
+                    result = segs[1] + spec.getUnit() + "以下";
+                }else{
+                    result = segment + spec.getUnit();
+                }
+                break;
+            }
+        }
+        return result ;
     }
 
 }

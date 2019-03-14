@@ -10,8 +10,7 @@ import pojo.SpuBo;
 import pojo.SpuDetail;
 
 import java.util.List;
-
-@RequestMapping("/goods")
+@RequestMapping
 public interface GoodsApi {
     /**
      * 分页查询商品
@@ -21,7 +20,7 @@ public interface GoodsApi {
      * @param key
      * @return
      */
-    @GetMapping("/spu/page")
+    @GetMapping("spu/page")
     public PageResult<SpuBo> querySpuByPage(
             @RequestParam(value = "page", defaultValue = "1") Integer page,
             @RequestParam(value = "rows", defaultValue = "5") Integer rows,
@@ -33,7 +32,7 @@ public interface GoodsApi {
      * @param id
      * @return
      */
-    @GetMapping("/spu/detail/{id}")
+    @GetMapping("spu/detail/{id}")
     public SpuDetail querySpuDetailById(@PathVariable("id") Long id);
 
     /**
@@ -41,7 +40,7 @@ public interface GoodsApi {
      * @param id
      * @return
      */
-    @GetMapping("/sku/list")
+    @GetMapping("sku/list")
     public List<Sku> querySkuBySpuId(@RequestParam("id") Long id);
 
 }

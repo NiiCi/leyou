@@ -6,8 +6,6 @@ import com.leyou.common.pojo.PageResult;
 import com.leyou.item.dao.BrandDao;
 import com.leyou.item.dao.CategoryDao;
 import com.leyou.item.sevice.BrandService;
-import com.netflix.discovery.converters.Auto;
-import lombok.Data;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

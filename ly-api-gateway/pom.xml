@@ -14,6 +14,7 @@
     <version>0.0.1-SNAPSHOT</version>
 
     <dependencies>
+        <!-- 服务网关依赖 -->
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-netflix-zuul</artifactId>
@@ -23,10 +24,18 @@
             <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
         </dependency>
         <!--是springboot提供的微服务检测接口，默认对外提供几个接口：/info-->
+        <!--熔断器的监控包 start-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
+        <!-- zuul服务重试依赖 -->
+        <dependency>
+            <groupId>org.springframework.retry</groupId>
+            <artifactId>spring-retry</artifactId>
+        </dependency>
+        <!--熔断器的监控包 end-->
+        
     </dependencies>
 
 

@@ -6,7 +6,6 @@ import com.leyou.common.pojo.PageResult;
 import com.leyou.item.dao.*;
 import com.leyou.item.sevice.CategoryService;
 import com.leyou.item.sevice.GoodsService;
-import com.netflix.discovery.converters.Auto;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;

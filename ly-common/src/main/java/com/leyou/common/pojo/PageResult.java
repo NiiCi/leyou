@@ -1,5 +1,6 @@
 package com.leyou.common.pojo;
 
+
 import lombok.Data;
 
 import java.util.List;
@@ -9,6 +10,7 @@ public class PageResult<T> {
     private long total; //总记录数
     private long totalPage; //总页数
     private List<T> items; //当前页数据
+
     public PageResult() {
     }
 

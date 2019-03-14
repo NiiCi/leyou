@@ -3,13 +3,11 @@ package com.leyou.item.controller;
 import com.leyou.common.pojo.PageResult;
 import com.leyou.item.sevice.GoodsService;
 import lombok.extern.log4j.Log4j2;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pojo.Sku;
-import pojo.Spu;
 import pojo.SpuBo;
 import pojo.SpuDetail;
 
@@ -17,6 +15,7 @@ import java.util.List;
 
 @RestController
 @Log4j2
+@RequestMapping
 public class GoodsController {
     @Autowired
     private GoodsService goodsService;
