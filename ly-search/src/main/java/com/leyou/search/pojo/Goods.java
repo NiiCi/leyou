@@ -28,12 +28,12 @@ public class Goods {
     /**
      * 所有需要被搜索的信息，包含标题，分类信息，品牌等
      */
-    @Field(type = FieldType.text, analyzer = "ik_max_word")
+    @Field(type = FieldType.Text, analyzer = "ik_max_word")
     private String all;
     /**
      * 子标题
      */
-    @Field(type = FieldType.keyword, index = false)
+    @Field(type = FieldType.Keyword, index = false)
     private String subTitle;
     /**
      * 品牌id
@@ -63,7 +63,7 @@ public class Goods {
      * json格式的sku信息
      * index = false  代表不需要索引，则不能被搜索
      */
-    @Field(type = FieldType.keyword, index = false)
+    @Field(type = FieldType.Keyword, index = false)
     private String skus;
     /**
      * 可搜索的规格参数，key是参数名，值是参数值
