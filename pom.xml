@@ -3,6 +3,8 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <packaging>pom</packaging>
+    <name>leyou</name>
+    <description>Demo project for Spring Boot</description>
     <modules>
         <module>ly-registry</module>
         <module>ly-api-gateway</module>
@@ -35,7 +37,7 @@
         <pageHelper.starter.version>1.2.5</pageHelper.starter.version>
         <leyou.latest.version>0.0.1-SNAPSHOT</leyou.latest.version>
         <fastDFS.client.version>1.26.1-RELEASE</fastDFS.client.version>
-</properties>
+    </properties>
 
     <dependencyManagement>
         <dependencies>
@@ -84,6 +86,11 @@
                 <version>1.16.20</version>
             </dependency>
             <dependency>
+                <groupId>com.github.tobato</groupId>
+                <artifactId>fastdfs-client</artifactId>
+                <version>${fastDFS.client.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-devtools</artifactId>
                 <version>2.0.1.RELEASE</version>
@@ -95,12 +102,11 @@
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
-            <version> 3.4</version>
+            <version>3.4</version>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <version>1.16.20</version>
         </dependency>
     </dependencies>
 

@@ -2,7 +2,6 @@ package com.leyou.search.service.impl;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.leyou.common.utils.JsonUtils;
-import com.leyou.common.utils.NumberUtils;
 import com.leyou.search.client.CategoryClient;
 import com.leyou.search.client.GoodsClient;
 import com.leyou.search.client.SpecificationClient;
@@ -100,7 +99,9 @@ public class IndexServiceImpl implements IndexService {
     }
 
     private String chooseSegment(String value, SpecParam spec) {
-        Double val = NumberUtils.toDouble(value);
+        Optional<String> valFlag = null ;
+        valFlag = Optional.ofNullable(value);
+        Double val = valFlag.map(s -> Double.parseDouble(s)).orElse(null);
         String result = "其它";
         // 保存数值段
         // 数值段 为{0-1,1-2}的json形式，进行分割
@@ -108,10 +109,12 @@ public class IndexServiceImpl implements IndexService {
         for (String segment : segments) {
             String[] segs = segment.split("-");
             //获取数值范围
-            Double begin = NumberUtils.toDouble(segs[0]);
+            valFlag = Optional.ofNullable(segs[0]);
+            Double begin = valFlag.map(s -> Double.parseDouble(s)).orElse(null);
             Double end = Double.MAX_VALUE;
             if (segs.length == 2){
-                end = NumberUtils.toDouble(segs[1]);
+                valFlag = Optional.ofNullable(segs[1]);
+                end = valFlag.map(s -> Double.parseDouble(s)).orElse(null);
             }
             //判断是否在范围内
             if(val >= begin && val < end){
