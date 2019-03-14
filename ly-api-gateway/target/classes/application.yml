@@ -21,7 +21,8 @@ zuul:
   ignored-services:
     #集合语法 - 代表可以配置多个
     - upload-service #忽略upload-service服务,绕过zuul网关,减少网络负担
-
+    - search-service
+  ribbon-isolation-strategy: thread
 ribbon:
   # Ribbon的连接超时时间
   ConnectTimeout: 60000
@@ -33,6 +34,7 @@ ribbon:
   MaxAutoRetriesNextServer: 1
   # 同一服务重连次数
   MaxAutoRetries: 1
+
 
 hystrix:
   command:

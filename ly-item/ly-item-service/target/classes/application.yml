@@ -13,7 +13,7 @@ spring:
   devtools:
     restart:
       enabled: true
-      additional-paths: src/main/java
+      additional-paths: ly-item/ly-item-service/src/main/java
 eureka:
   client:
     service-url:
