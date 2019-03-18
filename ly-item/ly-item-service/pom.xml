@@ -28,25 +28,21 @@
         <dependency>
             <groupId>org.mybatis.spring.boot</groupId>
             <artifactId>mybatis-spring-boot-starter</artifactId>
-            <version>${mybatis.starter.version}</version>
         </dependency>
         <!-- 通用Mapper启动器 -->
         <dependency>
             <groupId>tk.mybatis</groupId>
             <artifactId>mapper-spring-boot-starter</artifactId>
-            <version>${mapper.starter.version}</version>
         </dependency>
         <!-- 分页助手启动器 -->
         <dependency>
             <groupId>com.github.pagehelper</groupId>
             <artifactId>pagehelper-spring-boot-starter</artifactId>
-            <version>${pageHelper.starter.version}</version>
         </dependency>
         <!-- mysql驱动 -->
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
-            <version>${mysql.version}</version>
         </dependency>
         <dependency>
             <groupId>com.leyou.service</groupId>
@@ -56,15 +52,11 @@
         <dependency>
             <groupId>com.leyou.common</groupId>
             <artifactId>ly-common</artifactId>
-            <version> 0.0.1-SNAPSHOT</version>
+            <version>${leyou.latest.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-lang3</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>

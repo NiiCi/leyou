@@ -43,10 +43,10 @@ public class GoodsClientTest {
         int size = 0;
         do {
             //查询spu
-            PageResult<SpuBo> spuList =goodsClient.querySpuByPage(page,rows,true,null);
+            PageResult<SpuBo> spuList =goodsClient.querySpuByPage(page,10,true,null);
             //spu 转 goods
             List<SpuBo> spus =  spuList.getItems();
-            List<Goods> goodsList = spus.parallelStream().map(spu->indexService.buildGoods(spu)).collect(Collectors.toList());
+            List<Goods> goodsList = spus.parallelStream().map(indexService::buildGoods).collect(Collectors.toList());
             //把goodsList 插入到索引库中
             goodsMapper.saveAll(goodsList);
             size = spus.size();

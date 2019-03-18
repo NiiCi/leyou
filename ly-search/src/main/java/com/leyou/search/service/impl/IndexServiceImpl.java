@@ -2,6 +2,7 @@ package com.leyou.search.service.impl;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.leyou.common.utils.JsonUtils;
+import com.leyou.common.utils.NumberUtils;
 import com.leyou.search.client.CategoryClient;
 import com.leyou.search.client.GoodsClient;
 import com.leyou.search.client.SpecificationClient;
@@ -63,7 +64,7 @@ public class IndexServiceImpl implements IndexService {
 
         //处理规格参数
         Map<Long, String> genericMap = JsonUtils.parseMap(detail.getGenericSpec(), Long.class, String.class);
-        Map<Long, List<String>> specialMap = JsonUtils.nativeRead(detail.getGenericSpec(), new TypeReference<Map<Long, List<String>>>() {
+        Map<Long, List<String>> specialMap = JsonUtils.nativeRead(detail.getSpecialSpec(), new TypeReference<Map<Long, List<String>>>() {
         });
 
         Map<String, Object> specs = new ConcurrentHashMap<>();
@@ -99,9 +100,7 @@ public class IndexServiceImpl implements IndexService {
     }
 
     private String chooseSegment(String value, SpecParam spec) {
-        Optional<String> valFlag = null ;
-        valFlag = Optional.ofNullable(value);
-        Double val = valFlag.map(s -> Double.parseDouble(s)).orElse(null);
+        Double val = NumberUtils.toDouble(value);
         String result = "其它";
         // 保存数值段
         // 数值段 为{0-1,1-2}的json形式，进行分割
@@ -109,12 +108,10 @@ public class IndexServiceImpl implements IndexService {
         for (String segment : segments) {
             String[] segs = segment.split("-");
             //获取数值范围
-            valFlag = Optional.ofNullable(segs[0]);
-            Double begin = valFlag.map(s -> Double.parseDouble(s)).orElse(null);
+            Double begin = NumberUtils.toDouble(segs[0]);
             Double end = Double.MAX_VALUE;
             if (segs.length == 2){
-                valFlag = Optional.ofNullable(segs[1]);
-                end = valFlag.map(s -> Double.parseDouble(s)).orElse(null);
+                end = NumberUtils.toDouble(segs[1]);
             }
             //判断是否在范围内
             if(val >= begin && val < end){

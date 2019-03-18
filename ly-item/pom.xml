@@ -11,12 +11,12 @@
 
     <groupId>com.leyou.service</groupId>
     <artifactId>ly-item</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <!--打包方式为 pom-->
+    <packaging>pom</packaging>
     <modules>
         <module>ly-item-interface</module>
         <module>ly-item-service</module>
     </modules>
-    <!--打包方式为 pom-->
-    <packaging>pom</packaging>
+
 
 </project>

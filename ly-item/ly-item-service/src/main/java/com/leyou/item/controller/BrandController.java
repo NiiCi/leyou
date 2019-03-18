@@ -7,6 +7,7 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 import pojo.Brand;
 
@@ -97,5 +98,14 @@ public class BrandController {
             return ResponseEntity.badRequest().build();
         }
         return  ResponseEntity.ok(list);
+    }
+
+    @GetMapping("list")
+    public ResponseEntity<List<Brand>> queryBrandByIds(@RequestParam("ids") List<Long> ids){
+        List<Brand> list = brandService.queryBrandByIds(ids);
+        if (CollectionUtils.isEmpty(list)){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return ResponseEntity.ok(list);
     }
 }

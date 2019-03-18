@@ -44,4 +44,11 @@ public interface BrandService {
      * @return
      */
     public List<Brand> queryBrandByCid(Long cid) throws Exception;
+
+    /**
+     * 通过多个品牌id 查询品牌信息
+     * @param ids
+     * @return
+     */
+    List<Brand> queryBrandByIds(List<Long> ids);
 }

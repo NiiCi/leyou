@@ -6,11 +6,12 @@ import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 import pojo.Brand;
+import tk.mybatis.mapper.additional.idlist.SelectByIdListMapper;
 import tk.mybatis.mapper.common.Mapper;
 
 import java.util.List;
 
-    public interface BrandDao extends Mapper<Brand> {
+    public interface BrandDao extends Mapper<Brand>,SelectByIdListMapper<Brand,Long> {
         @Insert("INSERT INTO tb_category_brand (category_id, brand_id) VALUES (#{cid},#{bid})")
         public int insertCategoryBrand(@Param("cid") Long cids,  @Param("bid") Long id);
 

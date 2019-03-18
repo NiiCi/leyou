@@ -83,4 +83,9 @@ public class BrandServiceImpl implements BrandService {
     public List<Brand> queryBrandByCid(Long cid) throws Exception{
         return brandDao.queryBrandByCid(cid);
     }
+
+    @Override
+    public List<Brand> queryBrandByIds(List<Long> ids) {
+        return brandDao.selectByIdList(ids);
+    }
 }
