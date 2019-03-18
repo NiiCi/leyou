@@ -79,10 +79,8 @@ public class SearchServiceImpl implements SearchService {
         Long totalPage = (total + searchRequest.getSize() -1)/searchRequest.getSize();
         //3.2 商品分类的聚合结果
         List<Category> categories =  getCategoryAggResult(pageInfo.getAggregation(categoryAggName));
-        categories.forEach(System.out::println);
         //3.3 品牌的聚合结果
         List<Brand> brands = getBrandAggResult(pageInfo.getAggregation(brandAggName));
-        brands.forEach(System.out::println);
         //返回结果
         Page<Goods> result =  goodsMapper.search(searchQueryBuilder.build());
         //解析结果
