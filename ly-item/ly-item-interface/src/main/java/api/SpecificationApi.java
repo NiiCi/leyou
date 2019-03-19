@@ -1,7 +1,10 @@
 package api;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import pojo.SpecGroup;
 import pojo.SpecParam;
 
@@ -18,6 +21,4 @@ public interface SpecificationApi {
             @RequestParam(value="cid",required = false) Long cid,
             @RequestParam(value="searching",required = false) Boolean searching,
             @RequestParam(value="generic",required = false) Boolean generic);
-
-
 }

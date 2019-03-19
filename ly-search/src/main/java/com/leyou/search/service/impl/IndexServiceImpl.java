@@ -41,7 +41,7 @@ public class IndexServiceImpl implements IndexService {
         //商品分类
         List<String> nameList = categoryClient.queryNameByIds(Arrays.asList(spu.getCid1(), spu.getCid2(), spu.getCid3()));
         //查询规格参数
-        List<SpecParam> specParamList = specificationClient.querySpecParams(null, spu.getCid3(), null, true);
+        List<SpecParam> specParamList = specificationClient.querySpecParams(null, spu.getCid3(), true, null);
         // TODO查询品牌名称
 
         //我们需要的数据

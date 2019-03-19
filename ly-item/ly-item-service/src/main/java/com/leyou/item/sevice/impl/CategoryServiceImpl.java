@@ -10,7 +10,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import pojo.Category;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 @Service(value = "categoryService")
 public class CategoryServiceImpl implements CategoryService {
@@ -49,5 +51,16 @@ public class CategoryServiceImpl implements CategoryService {
             nameList.add(names.getName());
         });
         return nameList;
+    }
+
+    @Override
+    public List<Category> queryAllByCid3(Long id) throws Exception {
+        List<Category> list = new ArrayList<>();
+        Category c1 = categoryDao.selectByPrimaryKey(id);
+        Optional<Category> val = Optional.of(c1);
+        Category c2 = categoryDao.selectByPrimaryKey(val.get().getParentId());
+        val = Optional.ofNullable(c2);
+        Category c3 = categoryDao.selectByPrimaryKey(val.get().getParentId());
+        return Arrays.asList(c1,c2,c3);
     }
 }

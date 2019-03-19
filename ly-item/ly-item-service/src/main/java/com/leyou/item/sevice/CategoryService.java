@@ -38,4 +38,11 @@ public interface CategoryService {
      * @return
      */
     public List<String> queryNameByIds(List<Long> ids) throws Exception;
+
+    /**
+     * 通过三级分类id 查询所有分类
+     * @param id
+     * @return
+     */
+    public List<Category> queryAllByCid3(Long id) throws Exception;
 }

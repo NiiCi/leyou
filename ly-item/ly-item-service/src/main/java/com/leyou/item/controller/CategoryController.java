@@ -71,6 +71,20 @@ public class CategoryController {
         }
         return ResponseEntity.ok(list);
     }
+
+    @GetMapping("all/level")
+    public ResponseEntity<List<Category>> queryAllByCid3(@RequestParam("id") Long id){
+        List<Category> list = new ArrayList<>();
+        try {
+            list = categoryService.queryAllByCid3(id);
+            if (list == null || list.size() < 1){
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
+        } catch (Exception e) {
+            log.error(e.getMessage(),e);
+        }
+        return ResponseEntity.ok(list);
+    }
 }
 
 
