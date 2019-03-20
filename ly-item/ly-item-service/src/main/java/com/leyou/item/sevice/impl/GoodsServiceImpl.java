@@ -191,4 +191,9 @@ public class GoodsServiceImpl implements GoodsService {
         //删除spuDetail
         spuDetailDao.deleteByPrimaryKey(id);
     }
+
+    @Override
+    public Spu querySpuById(Long id) throws Exception {
+        return spuDao.selectByPrimaryKey(id);
+    }
 }

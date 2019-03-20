@@ -8,10 +8,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pojo.Sku;
+import pojo.Spu;
 import pojo.SpuBo;
 import pojo.SpuDetail;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @Log4j2
@@ -111,4 +113,18 @@ public class GoodsController {
         return ResponseEntity.ok(null);
     }
 
+    @GetMapping("spu/{id}")
+    public ResponseEntity<Spu> querySpuById(@PathVariable("id") Long id){
+        Spu spu = null;
+        try {
+            spu = goodsService.querySpuById(id);
+            if (Optional.ofNullable(spu).isPresent()){
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
+        } catch (Exception e) {
+            log.error(e.getMessage(),e);
+            return ResponseEntity.badRequest().build();
+        }
+        return ResponseEntity.ok(spu);
+    }
 }

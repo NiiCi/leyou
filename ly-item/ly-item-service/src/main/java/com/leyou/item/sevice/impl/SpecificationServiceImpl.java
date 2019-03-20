@@ -3,6 +3,7 @@ package com.leyou.item.sevice.impl;
 import com.leyou.item.dao.SpecGroupDao;
 import com.leyou.item.dao.SpecParamDao;
 import com.leyou.item.sevice.SpecificationService;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pojo.SpecGroup;
@@ -13,6 +14,7 @@ import java.util.List;
 import java.util.Scanner;
 
 @Service("specificationService")
+@Log4j2
 public class SpecificationServiceImpl implements SpecificationService {
     @Autowired
     private SpecGroupDao specGroupDao;
@@ -63,5 +65,21 @@ public class SpecificationServiceImpl implements SpecificationService {
     @Override
     public int deleteSpecParam(Long id) throws Exception {
         return specParamDao.deleteByPrimaryKey(id);
+    }
+
+    @Override
+    public List<SpecGroup> querySpecsByCid(Long cid) throws Exception {
+        //查询规格组
+        List<SpecGroup> groups = querySpecGroups(cid);
+        SpecParam specParam = new SpecParam();
+        groups.parallelStream().forEach(s->{
+            try {
+                //通过规格组id，gid查询组内规格参数
+                s.setParams(querySpecParams(s.getId(),null,true,null));
+            } catch (Exception e) {
+                log.error(e.getMessage(),e);
+            }
+        });
+        return groups;
     }
 }

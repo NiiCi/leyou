@@ -12,6 +12,7 @@
         <module>ly-common</module>
         <module>ly-upload</module>
         <module>ly-search</module>
+        <module>ly-goods-page</module>
     </modules>
 
     <parent>

@@ -22,4 +22,6 @@ public interface SpecificationService {
     public int updateSpecParam(SpecParam specParam) throws Exception;
 
     public int deleteSpecParam(Long id) throws Exception;
+
+    public List<SpecGroup> querySpecsByCid(Long cid) throws Exception;
 }
