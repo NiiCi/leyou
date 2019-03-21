@@ -118,7 +118,7 @@ public class GoodsController {
         Spu spu = null;
         try {
             spu = goodsService.querySpuById(id);
-            if (Optional.ofNullable(spu).isPresent()){
+            if (!Optional.ofNullable(spu).isPresent()){
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }
         } catch (Exception e) {

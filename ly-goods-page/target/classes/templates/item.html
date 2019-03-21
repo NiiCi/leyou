@@ -1,15 +1,14 @@
 ﻿<!DOCTYPE html>
 <!-- 添加thymeleaf支持 -->
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-
 <head>
 	<meta charset="utf-8" />
 	<meta http-equiv="X-UA-Compatible" content="IE=9; IE=8; IE=7; IE=EDGE">
 	<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7" />
 	<title>乐优商城--商品详情页</title>
-	 <link rel="icon" href="/assets/img/favicon.ico">
+	<link rel="icon" href="/assets/img/favicon.ico">
 
-    <link rel="stylesheet" type="text/css" href="/css/webbase.css" />
+    <link rel="stylesheet" type="text/css" href="/css/w	ebbase.css" />
     <link rel="stylesheet" type="text/css" href="/css/pages-item.css" />
     <link rel="stylesheet" type="text/css" href="/css/pages-zoom.css" />
     <link rel="stylesheet" type="text/css" href="/css/widget-cartPanelView.css" />
@@ -86,7 +85,19 @@
            padding-right: 50px;
        }
 </style>
-
+	<script th:inline="javascript">
+        // sku集合
+        const skus = /*[[${skus}]]*/ [];
+        // 规格参数id与name对
+        const paramMap = /*[[${paramMap}]]*/ {};
+        // 特有规格参数集合
+        const specialSpec = JSON.parse(/*[[${spuDetail.specialSpec}]]*/ "");
+        // 初始化规格参数索引
+		const indexes = {};
+		Object.keys(specialSpec).forEach(key =>{
+            indexes[key] = 0;
+		})
+	</script>
 </head>
 
 <body>
@@ -101,19 +112,13 @@
 		<div id="item">
 			<div class="crumb-wrap">
 				<ul class="sui-breadcrumb">
-					<li>
-						<a href="#">手机</a>
+					<li th:each="category : ${categories}">
+						<a href="#" th:text="${category.name}">手机</a>
 					</li>
 					<li>
-						<a href="#">手机通讯</a>
+						<a href="#" th:text="${brand.name}">Apple</a>
 					</li>
-					<li>
-						<a href="#">手机</a>
-					</li>
-					<li>
-						<a href="#">Apple</a>
-					</li>
-					<li class="active">Apple iPhone 6s</li>
+					<li class="active" th:text="${spu.title}">Apple iPhone 6s</li>
 				</ul>
 			</div>
 			<!--product-info-->
@@ -124,7 +129,7 @@
 						<!--默认第一个预览-->
 						<div id="preview" class="spec-preview">
 							<span class="jqzoom">
-								<img jqimg="/img/_/b1.png" src="/img/_/s1.png" width="400px" height="400px"/>
+								<img jqimg="images[0]" src="images[0]" width="400px" height="400px"/>
 							</span>
 						</div>
 						<!--下方的缩略图-->
@@ -133,15 +138,9 @@
 							<!--左右按钮-->
 							<div class="items">
 								<ul>
-									<li><img src="/img/_/s1.png" bimg="/img/_/b1.png" onmousemove="preview(this)" /></li>
-									<li><img src="/img/_/s2.png" bimg="/img/_/b2.png" onmousemove="preview(this)" /></li>
-									<li><img src="/img/_/s3.png" bimg="/img/_/b3.png" onmousemove="preview(this)" /></li>
-									<li><img src="/img/_/s1.png" bimg="/img/_/b1.png" onmousemove="preview(this)" /></li>
-									<li><img src="/img/_/s2.png" bimg="/img/_/b2.png" onmousemove="preview(this)" /></li>
-									<li><img src="/img/_/s3.png" bimg="/img/_/b3.png" onmousemove="preview(this)" /></li>
-									<li><img src="/img/_/s1.png" bimg="/img/_/b1.png" onmousemove="preview(this)" /></li>
-									<li><img src="/img/_/s2.png" bimg="/img/_/b2.png" onmousemove="preview(this)" /></li>
-									<li><img src="/img/_/s3.png" bimg="/img/_/b3.png" onmousemove="preview(this)" /></li>
+									<li v-for="(img,i) in images" :key="i">
+										<img src="img" bimg="img" onmousemove="preview(this)" />
+									</li>
 								</ul>
 							</div>
 							<a class="next">&gt;</a>
@@ -150,14 +149,14 @@
 				</div>
 				<div class="fr itemInfo-wrap">
 					<div class="sku-name">
-						<h4>Apple iPhone 6s（A1700）64G玫瑰金色 移动通信电信4G手机</h4>
+						<h4 v-text="sku.title">Apple iPhone 6s（A1700）64G玫瑰金色 移动通信电信4G手机</h4>
 					</div>
-					<div class="news"><span>推荐选择下方[移动优惠购],手机套餐齐搞定,不用换号,每月还有花费返</span></div>
+					<div class="news"><span th:utext="${spu.subTitle}">推荐选择下方[移动优惠购],手机套餐齐搞定,不用换号,每月还有花费返</span></div>
 					<div class="summary">
 						<div class="summary-wrap">
 							<div class="fl title"><i>价　　格</i></div>
 							<div class="fl price">
-								<i>¥</i><em>5299.00</em><span>降价通知</span>
+								<i>¥</i><em v-text="ly.formatPrice(sku.price)">5299.00</em><span>降价通知</span>
 							</div>
 							<div class="fr remark"><i>累计评价</i><em>612188</em></div>
 						</div>
@@ -192,51 +191,21 @@
 					</div>
 					<div class="clearfix choose">
 						<div id="specification" class="summary-wrap clearfix">
-							<dl>
+							<dl v-for="(val,key) in specialSpec" :key="key">
+								<!-- 规格参数名 -->
 								<dt>
 									<div class="fl title">
-									<i>选择颜色</i>
-								</div>
+										<!-- specialSpec和paramMap的key值相同,通过key获取参数名 -->
+										<i v-text="paramMap[key]"></i>
+									</div>
 								</dt>
-								<dd>
-									<a href="javascript:;" class="selected">
-										金色<span title="点击取消选择">&nbsp;</span>
+								<!-- 遍历特殊规格参数 -->
+								<dd v-for="(v,i) in val" :key="i">
+									<!--初始化 第一个默认选中-->
+									<a href="javascript:;" :class="{selected:i === indexes[key]}" @click="indexes[key] = i">
+										{{v}}<span  title="点击取消选择">&nbsp;</span>
 									</a>
 								</dd>
-								<dd><a href="javascript:;">银色</a></dd>
-								<dd><a href="javascript:;">黑色</a></dd>
-							</dl>
-							<dl>
-								<dt>
-									<div class="fl title">
-									<i>内存容量</i>
-								</div>
-								</dt>
-								<dd><a href="javascript:;" class="selected">16G<span title="点击取消选择">&nbsp;</span>
-</a></dd>
-								<dd><a href="javascript:;">64G</a></dd>
-								<dd><a href="javascript:;" class="locked">128G</a></dd>
-							</dl>
-							<dl>
-								<dt>
-									<div class="fl title">
-									<i>选择版本</i>
-								</div>
-								</dt>
-								<dd><a href="javascript:;" class="selected">公开版<span title="点击取消选择">&nbsp;</span>
-</a></dd>
-								<dd><a href="javascript:;">移动版</a></dd>							
-							</dl>
-							<dl>
-								<dt>
-									<div class="fl title">
-									<i>购买方式</i>
-								</div>
-								</dt>
-								<dd><a href="javascript:;" class="selected">官方标配<span title="点击取消选择">&nbsp;</span>
-</a></dd>
-								<dd><a href="javascript:;">移动优惠版</a></dd>	
-								<dd><a href="javascript:;"  class="locked">电信优惠版</a></dd>
 							</dl>
 						</div>
 
@@ -403,7 +372,7 @@
 							<div class="fl suits">
 								<ul class="suit-list">
 									<li class="">
-										<div id="">
+										<div>
 											<img src="/img/_/dp01.png" />
 										</div>
 										<i>Feless费勒斯VR</i>
@@ -412,14 +381,14 @@
   </label>
 									</li>
 									<li class="">
-										<div id=""><img src="/img/_/dp02.png" /> </div>
+										<div><img src="/img/_/dp02.png" /> </div>
 										<i>Feless费勒斯VR</i>
 										<label data-toggle="checkbox" class="checkbox-pretty">
     <input type="checkbox"><span>50</span>
   </label>
 									</li>
 									<li class="">
-										<div id=""><img src="/img/_/dp03.png" /></div>
+										<div><img src="/img/_/dp03.png" /></div>
 										<i>Feless费勒斯VR</i>
 										<label data-toggle="checkbox" class="checkbox-pretty">
     <input type="checkbox"><span>59</span>
@@ -490,10 +459,8 @@
 									<li>机身内存：64GB</li>
 								</ul>
 								<!--商品详情-->
-								<div class="intro-detail">
-									<img src="/img/_/intro01.png" />
-									<img src="/img/_/intro02.png" />
-									<img src="/img/_/intro03.png" />
+								<div class="intro-detail" th:utext="${spuDetail.description}">
+
 								</div>
 							</div>
 							<div id="two" class="tab-pane">
@@ -666,20 +633,65 @@
 			</div>
 		</div>
 	</div>
-	
 </div>
 <script src="/js/vue/vue.js"></script>
 <script src="/js/axios.min.js"></script>
 <script src="/js/common.js"></script>
-
+<script th:inline="javascript"  type="text/javascript">
+    const a = /*[[${groups}]]*/ null;
+    const b = /*[[${paramMap}]]*/ null;
+    const c = /*[[${categories}]]*/ null;
+    const d = /*[[${spu}]]*/ null;
+    const spuDetail = /*[[${spuDetail}]]*/ null;
+    const f = /*[[${skus}]]*/ null;
+    const g = /*[[${brand}]]*/ null;
+</script>
 <script>
     var itemVm = new Vue({
         el:"#itemApp",
         data:{
+            ly,
+			skus,
+			paramMap,
+			specialSpec,
+            indexes,
+            spuDetail
         },
+		methods:{
+
+		},
         components:{
             lyTop: () => import('/js/pages/top.js')
-        }
+        },
+		computed:{
+            sku(){
+                const index = Object.values(this.indexes).join("_");
+                return this.skus.find(s => s.indexes = index);
+			},
+            //商品图片是一个字符串，以,分割，页面展示比较麻烦，所以我们编写一个计算属性，将图片字符串变成数组：
+            images(){
+                return this.sku.images ? this.sku.images.split(",") : [''];
+            },
+			//  规格参数的值分为两部分：
+			//  通用规格参数：保存在SpuDetail中的genericSpec中
+			//  特有规格参数：保存在sku的ownSpec中
+			//  我们需要把这两部分值取出来，放到groups中。
+            groups(){
+                groups.forEach(group => {
+                    group.params.forEach(param => {
+                        if(param.generic){
+                            // 通用属性，去spu的genericSpec中获取
+							console.log(this);
+                            param.v = this.genericSpec[param.id] || '其它';
+                        }else{
+                            // 特有属性值，去SKU中获取
+                            param.v = JSON.parse(this.sku.ownSpec)[param.id]
+                        }
+                    })
+                });
+                return groups;
+            }
+		}
     });
 </script>
 
@@ -705,30 +717,5 @@ $(function(){
 <script type="text/javascript" src="/js/plugins/jquery.jqzoom/jquery.jqzoom.js"></script>
 <script type="text/javascript" src="/js/plugins/jquery.jqzoom/zoom.js"></script>
 <script type="text/javascript" src="index/index.js"></script>
-<script th:inline="javascript">
-
-    const a = /*[[${groups}]]*/ null;
-
-    const b = /*[[${paramMap}]]*/ null;
-
-    const c = /*[[${categories}]]*/ null;
-
-    const d = /*[[${spu}]]*/ null;
-
-    const e = /*[[${spuDetail}]]*/ null;
-
-    const f = /*[[${skus}]]*/ null;
-
-    const g = /*[[${brand}]]*/ null;
-    console.log(a);
-    console.log(b);
-    console.log(c);
-    console.log(d);
-    console.log(e);
-    console.log(f);
-    console.log(g);
-
-</script>
 </body>
-
 </html>

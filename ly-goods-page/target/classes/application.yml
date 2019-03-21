@@ -6,6 +6,10 @@ spring:
   #关闭thymeleaf模板引擎的缓存
   thymeleaf:
     cache: false
+    encoding: UTF-8
+    prefix: classpath:/templates/
+    suffix: .html
+
 eureka:
   client:
     service-url:

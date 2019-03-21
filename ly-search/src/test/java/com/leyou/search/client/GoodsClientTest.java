@@ -43,7 +43,7 @@ public class GoodsClientTest {
         int size = 0;
         do {
             //查询spu
-            PageResult<SpuBo> spuList =goodsClient.querySpuByPage(page,10,true,null);
+            PageResult<SpuBo> spuList =goodsClient.querySpuByPage(10,5,true,null);
             //spu 转 goods
             List<SpuBo> spus =  spuList.getItems();
             List<Goods> goodsList = spus.parallelStream().map(indexService::buildGoods).collect(Collectors.toList());

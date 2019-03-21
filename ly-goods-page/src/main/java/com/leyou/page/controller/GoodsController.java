@@ -17,14 +17,20 @@ import java.util.Map;
 public class GoodsController {
     @Autowired
     private GoodsService goodsService;
-
+    /**
+     * 跳转到商品详情页
+     * @param model
+     * @param id
+     * @return
+     */
     @GetMapping("{id}.html")
     public String toItemPage(Model model, @PathVariable("id") Long id){
         //加载所需的数据
         try {
             Map<String,Object> modelMap = goodsService.loadModel(id);
-            log.info(modelMap.entrySet());
-            model.addAttribute(modelMap);
+            //放入模型
+            model.addAllAttributes(modelMap);
+            log.info(model);
         } catch (Exception e) {
             log.error(e.getMessage(),e);
         }

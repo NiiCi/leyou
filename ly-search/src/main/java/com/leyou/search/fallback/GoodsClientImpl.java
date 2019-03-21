@@ -3,6 +3,7 @@ package com.leyou.search.fallback;
 import com.leyou.common.pojo.PageResult;
 import com.leyou.search.client.GoodsClient;
 import pojo.Sku;
+import pojo.Spu;
 import pojo.SpuBo;
 import pojo.SpuDetail;
 
@@ -23,4 +24,10 @@ public class GoodsClientImpl implements GoodsClient {
     public List<Sku> querySkuBySpuId(Long id) {
         return null;
     }
+
+    @Override
+    public Spu querySpuById(Long id) {
+        return null;
+    }
+
 }

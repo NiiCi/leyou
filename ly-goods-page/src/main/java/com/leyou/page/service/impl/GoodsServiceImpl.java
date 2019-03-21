@@ -34,7 +34,6 @@ public class GoodsServiceImpl implements GoodsService {
         try {
             //查询spu
             Spu spu = goodsClient.querySpuById(id);
-            log.info(spu.toString());
             //查询spuDetail
             SpuDetail spuDetail = goodsClient.querySpuDetailById(id);
             //查询sku
@@ -54,7 +53,7 @@ public class GoodsServiceImpl implements GoodsService {
                 modelMap.put("brand",brandList.get(0));
             }
             //查询规格组及组内参数
-            List<SpecGroup> specGroupList = specificationClient.querySpecsByCid(id);
+            List<SpecGroup> specGroupList = specificationClient.querySpecsByCid(spu.getCid3());
             modelMap.put("groups",specGroupList);
 
             //查询商品分类下的特有规格参数
