@@ -94,6 +94,7 @@
         const specialSpec = JSON.parse(/*[[${spuDetail.specialSpec}]]*/ "");
         // 初始化规格参数索引
 		const indexes = {};
+		const groups = /*[[${groups}]]*/ [];
 		Object.keys(specialSpec).forEach(key =>{
             indexes[key] = 0;
 		})
@@ -491,7 +492,9 @@
 </div>
 <div class="package-list">
     <h3>包装清单</h3>
-    <p>手机X1、快速指南X1、华为SuperCharge 充电器X1、三包凭证X1、Type-C 数字耳机X1、Type-C 数据线X1、取卡针X1、TPU保护壳X1、USB Type-C转3.5mm耳机转接线X1（备注：最终以实物为准）</p>
+    <p th:text="${spuDetail.packingList}" style="line-height: 43px;">
+		手机X1、快速指南X1、华为SuperCharge 充电器X1、三包凭证X1、Type-C 数字耳机X1、Type-C 数据线X1、取卡针X1、TPU保护壳X1、USB Type-C转3.5mm耳机转接线X1（备注：最终以实物为准）
+	</p>
 </div>
 
 							</div>
@@ -655,7 +658,8 @@
 			paramMap,
 			specialSpec,
             indexes,
-            spuDetail
+            spuDetail,
+			groups
         },
 		methods:{
 
@@ -676,8 +680,8 @@
 			//  通用规格参数：保存在SpuDetail中的genericSpec中
 			//  特有规格参数：保存在sku的ownSpec中
 			//  我们需要把这两部分值取出来，放到groups中。
-            groups(){
-                groups.forEach(group => {
+            groupses(){
+                this.groups.forEach(group => {
                     group.params.forEach(param => {
                         if(param.generic){
                             // 通用属性，去spu的genericSpec中获取
