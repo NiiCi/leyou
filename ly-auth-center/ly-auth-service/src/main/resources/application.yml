@@ -1,0 +1,34 @@
+server:
+  port: 8087
+spring:
+  application:
+    name: auth-service
+eureka:
+  client:
+    service-url:
+      defaultZone: http://127.0.0.1:8761/eureka
+    #表示eureka client间隔多久去拉取服务器注册信息,默认为30秒
+    registry-fetch-interval-seconds: 10
+  instance:
+    # 每隔5秒发送一次心跳
+    lease-renewal-interval-in-seconds: 5
+    # 10秒不发送就过期
+    lease-expiration-duration-in-seconds: 10
+    prefer-ip-address: true
+    ip-address: 127.0.0.1
+    instance-id: ${spring.application.name}:${server.port}
+ly:
+  jwt:
+    secret: ly@Login(Auth}*^31)&leyou%
+    # 公钥地址
+    pubKeyPath: E:/JWT/rsa/rsa.pub
+    # 私钥地址
+    priKeyPath: E:/JWT/rsa/rsa.pri
+    # 过期时间,单位分钟
+    expire: 30
+    #cookie的过期时间
+    cookieMaxAge: 1800
+    # cookie的名称
+    cookieName: LY_TOKEN
+
+

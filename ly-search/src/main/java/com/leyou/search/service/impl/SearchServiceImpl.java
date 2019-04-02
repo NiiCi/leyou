@@ -1,12 +1,17 @@
 package com.leyou.search.service.impl;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.leyou.common.utils.JsonUtils;
 import com.leyou.search.client.BrandClient;
 import com.leyou.search.client.CategoryClient;
+import com.leyou.search.client.GoodsClient;
 import com.leyou.search.client.SpecificationClient;
 import com.leyou.search.dao.GoodsMapper;
 import com.leyou.search.pojo.Goods;
 import com.leyou.search.pojo.SearchRequest;
 import com.leyou.search.pojo.SearchResult;
+import com.leyou.search.service.IndexService;
 import com.leyou.search.service.SearchService;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang.StringUtils;
@@ -15,7 +20,6 @@ import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.Operator;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
-import org.elasticsearch.index.search.MultiMatchQuery;
 import org.elasticsearch.search.aggregations.Aggregation;
 import org.elasticsearch.search.aggregations.AggregationBuilders;
 import org.elasticsearch.search.aggregations.bucket.terms.LongTerms;
@@ -30,20 +34,19 @@ import org.springframework.data.elasticsearch.core.aggregation.AggregatedPage;
 import org.springframework.data.elasticsearch.core.query.FetchSourceFilter;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
 import org.springframework.stereotype.Service;
-import pojo.Brand;
-import pojo.Category;
-import pojo.SpecParam;
+import pojo.*;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.io.IOException;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Service("searchService")
 @Log4j2
 public class SearchServiceImpl implements SearchService {
     @Autowired
     private GoodsMapper goodsMapper;
+    @Autowired
+    private GoodsClient goodsClient;
     @Autowired
     private CategoryClient categoryClient;
     @Autowired
@@ -52,8 +55,12 @@ public class SearchServiceImpl implements SearchService {
     private SpecificationClient specificationClient;
     @Autowired
     private ElasticsearchTemplate elasticsearchTemplate;
+    @Autowired
+    private ObjectMapper objectMapper;
+    @Autowired
+    private IndexService indexService;
     @Override
-    public SearchResult search(SearchRequest searchRequest) {
+    public SearchResult search(SearchRequest searchRequest)throws Exception {
         //判断是否有所搜过滤条件,如果没有,直接返回null.不允许搜索全部商品
         if (StringUtils.isBlank(searchRequest.getKey())){
             return null;
@@ -115,6 +122,112 @@ public class SearchServiceImpl implements SearchService {
         //解析结果
         return new SearchResult(total,totalPage,result.getContent(),categories,brands,specs);
     }
+
+    @Override
+    public void createIndex(Long id) throws IOException {
+        //查询spu
+       Spu spu =  goodsClient.querySpuById(id);
+       if (spu == null){
+           log.error("索引对应的spu不存在，spuId: {}",id);
+           //抛出异常，让消息回滚
+           throw  new RuntimeException();
+       }
+       log.debug(objectMapper.writeValueAsString(spu));
+       //查询 sku 信息
+        List<Sku> skus = goodsClient.querySkuBySpuId(id);
+       if (skus == null || skus.size() < 1){
+           log.error("索引对应的skus不存在，spuId: {}",id);
+           //抛出异常，让消息回滚
+           throw  new RuntimeException();
+       }
+        log.debug(objectMapper.writeValueAsString(skus));
+        //查询 spuDetail
+        SpuDetail spuDetail = goodsClient.querySpuDetailById(id);
+       if (spuDetail == null){
+           log.error("索引对应的spuDetail不存在，spuId: {}",id);
+           //抛出异常，让消息回滚
+           throw  new RuntimeException();
+       }
+        log.debug(objectMapper.writeValueAsString(spuDetail));
+        //查询商品分类名称
+        List<String> nameList = categoryClient.queryNameByIds(Arrays.asList(spu.getCid1(),spu.getCid2(),spu.getCid3()));
+        if (nameList == null || nameList.size()< 1 ){
+            log.error("索引对应的分类不存在，spuId: {}",id);
+            //抛出异常，让消息回滚
+            throw  new RuntimeException();
+        }
+        log.debug(objectMapper.writeValueAsString(nameList));
+        //查询规格参数
+        List<SpecParam> specParamList = specificationClient.querySpecParams(null, spu.getCid3(), true, null);
+        if(specParamList == null || specParamList.size()<1){
+            log.error("索引对应的规格参数不存在，spuId: {}",id);
+            //抛出异常，让消息回滚
+            throw  new RuntimeException();
+        }
+        log.debug(objectMapper.writeValueAsString(specParamList));
+
+        //我们需要的数据
+        // spuid、子标题、品牌id、分类id1、分类id2、分类id3、价格的数组、商品特殊信息集合、json格式的sku信息、map类型的spec信息
+        // 所有需要被搜索的信息，包含标题，分类信息，品牌名等
+
+        List<Long> priceList = new ArrayList<>();
+        List<Map<String, Object>> skuJsonList = new ArrayList<>();
+        skus.forEach(s -> {
+            //价格
+            priceList.add(s.getPrice());
+            Map<String, Object> map = new ConcurrentHashMap<>();
+            //skuid、标题、图片、价格
+            map.put("id", s.getId());
+            map.put("title", s.getTitle());
+            map.put("image", StringUtils.isBlank(s.getImages()) ? "" : s.getImages().split(",")[0]);
+            map.put("price", s.getPrice());
+            skuJsonList.add(map);
+        });
+
+        //处理规格参数
+        Map<Long, String> genericMap = JsonUtils.parseMap(spuDetail.getGenericSpec(), Long.class, String.class);
+        Map<Long, List<String>> specialMap = JsonUtils.nativeRead(spuDetail.getSpecialSpec(), new TypeReference<Map<Long, List<String>>>() {
+        });
+
+        Map<String, Object> specs = new ConcurrentHashMap<>();
+        specParamList.forEach(s -> {
+            if (s.getGeneric()) {
+                //通用参数
+                String value = genericMap.get(s.getId());
+                if (s.getNumeric()){
+                    //数值类型,需要存储一个分段
+                    value = indexService.chooseSegment(value, s);
+                }
+                specs.put(s.getName(),value);
+            }else{
+                //特有参数
+                specs.put(s.getName(),specialMap.get(s.getId()));
+            }
+        });
+
+        Goods goods = new Goods();
+        goods.setBrandId(spu.getBrandId());
+        goods.setCid1(spu.getCid1());
+        goods.setCid2(spu.getCid2());
+        goods.setCid3(spu.getCid3());
+        goods.setCreateTime(spu.getCreateTime());
+        goods.setId(spu.getId());
+        goods.setSubTitle(spu.getSubTitle());
+        //搜索条件 拼接: 标题、分类、品牌
+        goods.setAll(spu.getTitle()+" "+StringUtils.join(nameList," "));
+        goods.setPrice(priceList);
+        goods.setSkus(JsonUtils.serialize(skuJsonList));
+        goods.setSpecs(specs);
+        log.debug(objectMapper.writeValueAsString(goods));
+        // 保存数据到索引库
+        goodsMapper.save(goods);
+    }
+
+    @Override
+    public void deleteIndex(Long id) throws IOException{
+        goodsMapper.deleteById(id);
+    }
+
     //构建基本查询条件
     private QueryBuilder buildBasicQuery(SearchRequest searchRequest) {
         BoolQueryBuilder queryBuilder = QueryBuilders.boolQuery();

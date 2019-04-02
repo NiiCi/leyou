@@ -13,6 +13,7 @@ import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
 import org.springframework.test.context.junit4.SpringRunner;
 import pojo.SpuBo;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -53,5 +54,23 @@ public class GoodsClientTest {
             page++;
         }while (size == 100);
 
+    }
+    @Test
+    public static void filterList(List<String> list){
+        list.parallelStream().filter(s->{
+            return !s.equals("aaaaa");
+        }).forEach(System.out::println);
+        List<String> newList = list;
+    }
+
+    public static void main(String[] args) {
+        List<String> list = new ArrayList<>();
+        list.add("aaaaa");
+        list.add("bbbbb");
+        list.add("ccccc");
+        list.add("ddddd");
+        list.add("fffff");
+        list.add("aaaaa");
+        filterList(list);
     }
 }

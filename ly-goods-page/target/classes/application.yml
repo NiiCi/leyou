@@ -9,6 +9,11 @@ spring:
     encoding: UTF-8
     prefix: classpath:/templates/
     suffix: .html
+  rabbitmq:
+    host: 148.70.3.235
+    username: leyou
+    password: leyou
+    virtual-host: /leyou
 
 eureka:
   client:
@@ -24,4 +29,4 @@ eureka:
 #静态化页面存放地址
 ly:
   thymeleaf:
-    destPath: E:\nginx-1.12.2\html
+    destPath: E:\nginx-1.12.2\html\item

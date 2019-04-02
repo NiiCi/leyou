@@ -7,6 +7,7 @@ eureka:
   client:
     service-url:
       defaultZone: http://127.0.0.1:8761/eureka #服务注册地址
+    #表示eureka client间隔多久去拉取服务器注册信息,默认为30秒
     registry-fetch-interval-seconds: 5
   instance:
     prefer-ip-address: true
@@ -18,10 +19,18 @@ zuul:
   routes:
     item-service: /item/**  #将商品微服务映射到/item/**
     search-service: /search/** #将搜索微服务映射到/search/**
+    user-service: /user/** #将用户微服务映射到/user/**
+    auth-service: /auth/** #将鉴权微服务映射到/auth/**
 #  ignored-patterns: /upload/** #文件上传不经过zuul网关,减少负担
+
+  #集合语法 - 代表可以配置多个
   ignored-services:
-    #集合语法 - 代表可以配置多个
-    - upload-service #忽略upload-service服务,绕过zuul网关,减少网络负担
+    #忽略upload-service服务,绕过zuul网关,减少网络负担
+    - upload-service
+  #携带请求本身自带的头信息
+  add-host-header: true
+  #设置 zuul的敏感头信息为空，否则 cookie 无效
+  sensitive-headers:
 ribbon:
   # Ribbon的连接超时时间
   ConnectTimeout: 60000

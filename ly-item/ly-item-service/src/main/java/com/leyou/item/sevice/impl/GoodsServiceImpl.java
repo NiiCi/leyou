@@ -8,6 +8,8 @@ import com.leyou.item.sevice.CategoryService;
 import com.leyou.item.sevice.GoodsService;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.amqp.AmqpException;
+import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -38,6 +40,8 @@ public class GoodsServiceImpl implements GoodsService {
     private SkuDao skuDao;
     @Autowired
     private StockDao stockDao;
+    @Autowired
+    private AmqpTemplate amqpTemplate;
 
     @Override
     public PageResult<SpuBo> querySpuByPage(Integer page, Integer rows, Boolean saleable, String key) throws Exception {
@@ -97,6 +101,8 @@ public class GoodsServiceImpl implements GoodsService {
         spuDetailDao.insert(spuBo.getSpuDetail());
         //保存Sku 和 库存信息
         saveSkuAndStock(spuBo.getSkus(),spuBo.getId());
+        //发送消息到rabbitmq
+        this.sendMessage(spuBo.getId(),"insert");
     }
 
     private void saveSkuAndStock(List<Sku> skus, Long spuId) throws Exception{
@@ -166,6 +172,9 @@ public class GoodsServiceImpl implements GoodsService {
 
         // 更新spu详情
         spuDetailDao.updateByPrimaryKeySelective(spuBo.getSpuDetail());
+
+        //发送消息到rabbitmq中
+        this.sendMessage(spuBo.getId(),"update");
     }
 
     @Override
@@ -190,10 +199,22 @@ public class GoodsServiceImpl implements GoodsService {
         spuDao.deleteByPrimaryKey(id);
         //删除spuDetail
         spuDetailDao.deleteByPrimaryKey(id);
+
+        //发送消息到 rabbitmq中
+        this.sendMessage(id,"delete");
     }
 
     @Override
     public Spu querySpuById(Long id) throws Exception {
         return spuDao.selectByPrimaryKey(id);
+    }
+
+    public void sendMessage(Long id,String type){
+        //发送消息
+        try {
+            amqpTemplate.convertAndSend("item."+type , id);
+        } catch (AmqpException e) {
+           log.error("{}商品信息发送异常,商品id: {}",type,id,e);
+        }
     }
 }

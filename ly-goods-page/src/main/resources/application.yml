@@ -9,6 +9,11 @@ spring:
     encoding: UTF-8
     prefix: classpath:/templates/
     suffix: .html
+  rabbitmq:
+    host: 148.70.3.235
+    username: leyou
+    password: leyou
+    virtual-host: /leyou
 
 eureka:
   client:

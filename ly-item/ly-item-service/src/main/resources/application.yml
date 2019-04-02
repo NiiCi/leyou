@@ -14,6 +14,27 @@ spring:
     restart:
       enabled: true
       additional-paths: src/main/java
+  #rabbitmq 配置信息
+  rabbitmq:
+    host: 148.70.3.235
+    username: leyou
+    password: leyou
+    #虚拟主机地址
+    virtual-host: /leyou
+    template:
+      retry:
+        #启用重试
+        enabled: true
+        #第一次重试的间隔时长
+        initial-interval: 10000ms
+        # 最长重试间隔，超过间隔将不在重试
+        max-interval: 300000ms
+        # 下次重试间隔的倍数，即下次重试时 间隔时间是上次的几倍
+        multiplier: 2
+      #交换机名称，如果在 @RabbitListener中 没有指定交换机，则会发送到这台交换机上
+      exchange: ly.item.exchange
+    #生产者确认机制，确保消息会正确发送，如果发送失败会有错误回执，从而出发重试
+    publisher-confirms: true
 eureka:
   client:
     service-url:
@@ -24,3 +45,7 @@ eureka:
     prefer-ip-address: true
     ip-address: 127.0.0.1
     instance-id: ${spring.application.name}:${server.port}
+#配置 mybatis 显示执行sql
+mybatis:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl

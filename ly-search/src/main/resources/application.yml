@@ -9,7 +9,14 @@ spring:
       cluster-name: leyou-es
       cluster-nodes: 148.70.3.235:9300
   jackson:
-      default-property-inclusion: non_null # 把是null的值排除
+      # 把是null的值排除
+      default-property-inclusion: non_null
+  #rabbitmq 配置
+  rabbitmq:
+    host: 148.70.3.235
+    username: leyou
+    password: leyou
+    virtual-host: /leyou
 eureka:
   client:
     service-url:

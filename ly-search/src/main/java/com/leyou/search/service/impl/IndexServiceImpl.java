@@ -98,8 +98,8 @@ public class IndexServiceImpl implements IndexService {
         goods.setSpecs(specs);
         return goods;
     }
-
-    private String chooseSegment(String value, SpecParam spec) {
+    @Override
+    public String chooseSegment(String value, SpecParam spec) {
         Double val = NumberUtils.toDouble(value);
         String result = "其它";
         // 保存数值段
