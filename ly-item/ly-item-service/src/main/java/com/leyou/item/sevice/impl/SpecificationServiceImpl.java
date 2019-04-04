@@ -75,7 +75,7 @@ public class SpecificationServiceImpl implements SpecificationService {
         groups.parallelStream().forEach(s->{
             try {
                 //通过规格组id，gid查询组内规格参数
-                s.setParams(querySpecParams(s.getId(),null,true,null));
+                s.setParams(querySpecParams(s.getId(),null,null,null));
             } catch (Exception e) {
                 log.error(e.getMessage(),e);
             }

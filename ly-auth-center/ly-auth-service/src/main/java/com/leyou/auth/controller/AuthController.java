@@ -11,7 +11,9 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -40,12 +42,26 @@ public class AuthController {
         return ResponseEntity.ok().build();
     }
 
+    /**
+     * 验证用户信息
+     * @param token
+     * @return
+     */
     @GetMapping("/verify")
-    public ResponseEntity<UserInfo> verifyUser(@CookieValue("LY_TOKEN") String token){
+    public ResponseEntity<UserInfo> verifyUser(@CookieValue("LY_TOKEN") String token,
+                                               HttpServletRequest request,HttpServletResponse response){
         try {
             // 获取token信息
             // 通过 公钥解密
+            Cookie[] cookies = request.getCookies();
+            for (Cookie cookie : cookies) {
+                System.out.println(cookie.getValue());
+            }
             UserInfo userInfo = JWTUtils.getInfoFromToken(token, jwtProperties.getPublicKey());
+            //如果成功，需要刷新token返回给用户
+            String newToken = JWTUtils.generateToken(userInfo,jwtProperties.getPrivateKey(),jwtProperties.getExpire());
+            //将token 写入 cookie 中
+            CookieUtils.setCookie(request,response,jwtProperties.getCookieName(),newToken,jwtProperties.getCookieMaxAge(),null,true);
             // 成功后直接返回
             return ResponseEntity.ok(userInfo);
         } catch (Exception e) {

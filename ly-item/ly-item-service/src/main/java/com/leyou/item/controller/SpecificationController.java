@@ -16,7 +16,7 @@ import java.util.List;
 @RestController
 @RequestMapping(value = "spec")
 @Log4j2
-public class SpecificationController {
+public class  SpecificationController {
     @Autowired
     private SpecificationService specificationService;
 

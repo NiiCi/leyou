@@ -51,6 +51,22 @@ hystrix:
           # 熔断时间,超出则熔断
           timeoutInMilliseconds: 60000
 
+ly:
+  jwt:
+    #公钥地址
+    pubkeyPath: E:/JWT/rsa/rsa.pub
+    #cookie名称
+    cookieName: LY_TOKEN
+  # 过滤器路径白名单
+  filter:
+    allowPaths:
+      - /api/auth
+      - /api/search
+      - /api/user/register
+      - /api/user/check
+      - /api/user/send
+      - /api/item
+
 
 
 
