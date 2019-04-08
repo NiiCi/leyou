@@ -209,6 +209,11 @@ public class GoodsServiceImpl implements GoodsService {
         return spuDao.selectByPrimaryKey(id);
     }
 
+    @Override
+    public Sku querySkuById(Long id) throws Exception {
+        return skuDao.selectByPrimaryKey(id);
+    }
+
     public void sendMessage(Long id,String type){
         //发送消息
         try {

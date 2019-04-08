@@ -22,4 +22,6 @@ public interface GoodsService {
     public void deleteGoods(Long id) throws Exception;
 
     public Spu querySpuById(Long id) throws Exception;
+
+    public Sku querySkuById(Long id) throws Exception;
 }

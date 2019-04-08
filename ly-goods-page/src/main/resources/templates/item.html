@@ -681,6 +681,9 @@
                 //判断登录状态
                 ly.http.get("/auth/verify").then(resp => {
                     //已登录，发送信息到后台，添加到redis
+                    ly.http.post("/cart", {skuId: this.sku.id, num: this.num}).then(res=>{
+                        window.location.href = "http://www.leyou.com/cart.html";
+                    })
                 }).catch(() => {
                     //未登录，添加到localstorage
                     //1.查询本地购物车
@@ -691,20 +694,27 @@
                         //3.存在，改数量
                         cart.num += this.num;
                     } else {
+                        /*const newOwnSpec = {};
+                        let name = '';
+                        this.sku.ownSpec.forEach(function(value, index, array) {
+                            name = paramMap[index];
+                            newOwnSpec.push({name:value});
+                        });*/
+
                         //4.不存在，新增
                         cart = {
                             skuId: this.sku.id,
                             title: this.sku.title,
-                            image: this.images[0],
+                            image: this.sku.images,
                             price: this.sku.price,
                             num: this.num,
-                            ownSpec: JSON.stringify(this.ownSpec)
+                            ownSpec: JSON.stringify(this.sku.ownSpec)
                         };
                         carts.push(cart);
                     }
+
                     //把carts 添加到 localStorage
                     ly.store.set("carts", carts);
-
                     // 跳转
                     window.location.href = "http://www.leyou.com/cart.html";
                 })
@@ -731,15 +741,13 @@
                     group.params.forEach(param => {
                         if (param.generic) {
                             // 通用属性，去spu的genericSpec中获取
-                            console.log(this);
                             param.v = this.genericSpec[param.id] || '其它';
                         } else {
                             // 特有属性值，去SKU中获取
-                            param.v = JSON.parse(this.sku.ownSpec)[param.id]
+                            param.v = JSON.parse(this.sku.ownSpec)[param.id];
                         }
                     })
                 });
-
                 return groups;
             }
         }

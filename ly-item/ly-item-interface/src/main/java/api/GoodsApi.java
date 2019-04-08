@@ -53,4 +53,12 @@ public interface GoodsApi {
     @GetMapping("spu/{id}")
     public Spu querySpuById(@PathVariable("id") Long id);
 
+    /**
+     * 根据spu商品id 查询商品
+     * @param id
+     * @return
+     */
+    @GetMapping("sku/{id}")
+    public Sku querySkuById(@PathVariable("id") Long id);
+
 }

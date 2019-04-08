@@ -21,6 +21,7 @@ zuul:
     search-service: /search/** #将搜索微服务映射到/search/**
     user-service: /user/** #将用户微服务映射到/user/**
     auth-service: /auth/** #将鉴权微服务映射到/auth/**
+    cart-service: /cart/** #将购物车微服务映射到/cart/**
 #  ignored-patterns: /upload/** #文件上传不经过zuul网关,减少负担
 
   #集合语法 - 代表可以配置多个

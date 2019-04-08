@@ -30,4 +30,8 @@ public class GoodsClientImpl implements GoodsClient {
         return null;
     }
 
+    @Override
+    public Sku querySkuById(Long id) {
+        return null;
+    }
 }

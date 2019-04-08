@@ -1,6 +1,7 @@
 package com.leyou.item.controller;
 
 import com.leyou.common.pojo.PageResult;
+import com.leyou.common.utils.JsonUtils;
 import com.leyou.item.sevice.GoodsService;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -127,4 +128,20 @@ public class GoodsController {
         }
         return ResponseEntity.ok(spu);
     }
+
+    @GetMapping("sku/{id}")
+    public ResponseEntity<Sku> querySkuById(@PathVariable("id") Long id){
+        try {
+            Sku sku = goodsService.querySkuById(id);
+            log.info(JsonUtils.serialize(sku));
+            if (sku == null){
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
+            return ResponseEntity.ok(sku);
+        } catch (Exception e) {
+            log.error(e.getMessage(),e);
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
 }

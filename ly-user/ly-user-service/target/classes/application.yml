@@ -10,12 +10,7 @@ spring:
       hikari:
         maximum-pool-size: 20
         minimum-idle: 10
-  #指定 redis 端口号
-  redis:
-    host: 148.70.3.235
-    password: asdasdnc2.
-    #指定是 redis中的第几个库
-    database: 0
+
   rabbitmq:
     host: 148.70.3.235
     username: leyou
@@ -33,6 +28,13 @@ spring:
         multiplier: 2
     #生产者确认机制，确保消息会正确发送，如果发送失败会有错误回执，从而出发重试
     publisher-confirms: true
+
+  #指定 redis 端口号
+  redis:
+    port: 6379
+    host: 148.70.3.235
+    password: asdasdnc2.
+    database: 1
 eureka:
   client:
     service-url:
