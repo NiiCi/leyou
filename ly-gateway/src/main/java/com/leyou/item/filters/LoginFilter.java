@@ -19,7 +19,7 @@ import javax.servlet.http.HttpServletRequest;
 @Log4j2
 @Component
 @EnableConfigurationProperties({JwtProperties.class,FilterProperties.class})
-public class LoginFilter extends ZuulFilter {
+public class LoginFilter extends  ZuulFilter {
     @Autowired
     private JwtProperties prop;
     @Autowired

@@ -15,6 +15,7 @@ import org.springframework.util.CollectionUtils;
 import pojo.Sku;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service("cartService")
 @Log4j2
@@ -79,5 +80,41 @@ public class CartServiceImpl implements CartService {
         if (CollectionUtils.isEmpty(carts)){
             return null;
         }
+        //查询购物车数据,将redis中的json格式转换成list
+        return carts.parallelStream().map(o-> JsonUtils.parse(o.toString(),Cart.class)).collect(Collectors.toList());
+    }
+
+    @Override
+    public void updateCartNum(Long skuId, Integer num) throws Exception{
+        //从线程域从获取用户信息
+        UserInfo userInfo = LoginInterceptor.getLoginUser();
+        //判断是否存在购物车
+        String key = KEY_PREFIX+ userInfo.getId();
+        if (!redisTemplate.hasKey(key)){
+            //不存在，直接返回
+            return;
+        }
+        //从redis中获取购物车
+        BoundHashOperations<String,Object,Object> hashOps = redisTemplate.boundHashOps(key);
+        //获取购物车信息
+        String json = hashOps.get(skuId.toString()).toString();
+        Cart cart = JsonUtils.parse(json,Cart.class);
+        cart.setNum(num);
+        hashOps.put(skuId.toString(),JsonUtils.serialize(cart));
+    }
+
+    @Override
+    public void deleteCart(Long skuId) throws Exception{
+        //从线程域从获取用户信息
+        UserInfo userInfo = LoginInterceptor.getLoginUser();
+        //判断是否存在购物车
+        String key = KEY_PREFIX+ userInfo.getId();
+        if (!redisTemplate.hasKey(key)){
+            //不存在，直接返回
+            return;
+        }
+        //从redis中获取购物车
+        BoundHashOperations<String,Object,Object> hashOps = redisTemplate.boundHashOps(key);
+        hashOps.delete(skuId.toString());
     }
 }
