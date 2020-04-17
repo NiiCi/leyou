@@ -11,7 +11,7 @@ spring:
 
 ly:
   sms:
-    accessKeyId: LTAIBN5V5Bn59q19
+    accessKeyId: LTAIBN5V5Bn59q20
     accessKeySecret: 8X1ng6hXtCFszmTdCo4vFiOK5muuJ0
     #签名
     signName: 乐优商城
